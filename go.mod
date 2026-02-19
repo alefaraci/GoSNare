@@ -1,4 +1,4 @@
-module gosnare
+module github.com/alefaraci/GoSNare
 
 go 1.26.0
 

@@ -104,6 +104,12 @@ NetVirtualDisk (WebDav)/
 
 Quickly download the latest release of `GoSNare` for your platform from the [Releases](https://github.com/alefaraci/GoSNare/releases) page.
 
+### Go Install
+
+```bash
+go install github.com/alefaraci/GoSNare@latest
+```
+
 ### Build from Source
 
 > [!IMPORTANT]
