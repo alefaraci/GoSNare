@@ -29,7 +29,7 @@
     ·
     <a href="#contributing">Contributing</a>
     <br />
-    [ <a href="">Download</a> ]
+    [ <a href="https://github.com/alefaraci/GoSNare/releases/tag/v1.0.0">Download</a> ]
   </p>
 </p>
 
