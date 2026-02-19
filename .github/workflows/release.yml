@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            asset_name: gosnare-linux-amd64
+          - goos: linux
+            goarch: arm64
+            asset_name: gosnare-linux-arm64
+          - goos: darwin
+            goarch: amd64
+            asset_name: gosnare-macos-amd64
+          - goos: darwin
+            goarch: arm64
+            asset_name: gosnare-macos-arm64
+          - goos: windows
+            goarch: amd64
+            asset_name: gosnare-windows-amd64.exe
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: "0"
+        run: go build -ldflags="-s -w -X main.version=${{ github.ref_name }}" -o ${{ matrix.asset_name }} .
+
+      - name: Package
+        run: |
+          if [[ "${{ matrix.asset_name }}" == *.exe ]]; then
+            zip ${{ matrix.asset_name }}.zip ${{ matrix.asset_name }}
+          else
+            tar czf ${{ matrix.asset_name }}.tar.gz ${{ matrix.asset_name }}
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: ${{ matrix.asset_name }}.tar.gz
+          if-no-files-found: ignore
+
+      - name: Upload artifact (Windows)
+        uses: actions/upload-artifact@v4
+        if: matrix.goos == 'windows'
+        with:
+          name: ${{ matrix.asset_name }}-zip
+          path: ${{ matrix.asset_name }}.zip
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            artifacts/*.tar.gz
+            artifacts/*.zip
