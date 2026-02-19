@@ -291,7 +291,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Acknowledgements
 
-Credits: [supernote-tool](https://github.com/rjw57/supernote-tool) and [supernote_pdf](https://github.com/RohanGautam/supernote_pdf) for reverse-engineering the Supernote formats.
+Credits: [supernote-tool](https://github.com/jya-dev/supernote-tool) and [supernote_pdf](https://github.com/RohanGautam/supernote_pdf) for reverse-engineering the Supernote formats.
 
 ## License
 
